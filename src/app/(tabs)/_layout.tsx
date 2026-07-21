@@ -1,15 +1,32 @@
 import { Tabs } from 'expo-router';
-import { Bell, Clock3, Map, MapPinned, Settings } from 'lucide-react-native';
+import { Bell, Clock3, Heart, Map, MapPin, UserRound } from 'lucide-react-native';
+import { View } from 'react-native';
 
 import { Palette, Shadow } from '@/constants/theme';
 
 const icons = {
   index: Map,
   history: Clock3,
-  places: MapPinned,
   alerts: Bell,
-  settings: Settings,
+  settings: UserRound,
 };
+
+function PlacesTabIcon({ color, size, focused }: { color: string; size: number; focused: boolean }) {
+  const iconSize = focused ? size + 2 : size;
+
+  return (
+    <View style={{ width: iconSize + 7, height: iconSize + 7, alignItems: 'center', justifyContent: 'center' }}>
+      <MapPin color={color} size={iconSize + 3} strokeWidth={focused ? 2.6 : 2.2} />
+      <Heart
+        color={color}
+        fill={focused ? color : 'transparent'}
+        size={Math.max(9, iconSize * 0.38)}
+        strokeWidth={2.5}
+        style={{ position: 'absolute', top: iconSize * 0.28 }}
+      />
+    </View>
+  );
+}
 
 export default function TabsLayout() {
   return (
@@ -30,17 +47,20 @@ export default function TabsLayout() {
             borderTopColor: Palette.border,
             ...Shadow.soft,
           },
-          tabBarIcon: ({ color, size, focused }) => (
-            <Icon color={color} size={focused ? size + 1 : size} strokeWidth={focused ? 2.6 : 2} />
-          ),
+          tabBarIcon: ({ color, size, focused }) =>
+            route.name === 'places' ? (
+              <PlacesTabIcon color={color} size={size} focused={focused} />
+            ) : (
+              <Icon color={color} size={focused ? size + 1 : size} strokeWidth={focused ? 2.6 : 2} />
+            ),
         };
       }}
     >
       <Tabs.Screen name="index" options={{ title: 'Mapa' }} />
-      <Tabs.Screen name="history" options={{ title: 'Historial' }} />
       <Tabs.Screen name="places" options={{ title: 'Lugares' }} />
+      <Tabs.Screen name="history" options={{ title: 'Historial' }} />
       <Tabs.Screen name="alerts" options={{ title: 'Alertas' }} />
-      <Tabs.Screen name="settings" options={{ title: 'Ajustes' }} />
+      <Tabs.Screen name="settings" options={{ title: 'Perfil' }} />
     </Tabs>
   );
 }
